@@ -13,6 +13,9 @@ Vue.use(PrismicVue, {
   htmlSerializer
 })
 
+Vue.config.lang = 'en';
+console.log(Vue.config.lang);
+
 new Vue({
   router,
   render: h => h(App)

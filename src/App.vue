@@ -1,22 +1,48 @@
-<template>
-  <div id="app">
-    <router-view/>
-    <footer-prismic/>
-  </div>
+<template lang="pug">
+#app
+  navigation
+  .container.light.topMargin.bottomMargin
+    router-view
+
+  app-footer
 </template>
 
 <script>
-import FooterPrismic from './components/FooterPrismic.vue'
-
+	
+import Vue from 'vue'
+import AppFooter from './components/AppFooter.vue'
+import Navigation from './components/Navigation.vue'
 export default {
   name: 'App',
+  data () {
+    return {
+      navLinks: [],
+      documentId: '',
+      alternate_languages: '',
+      fields: {
+        title: null
+      }
+    }
+  },
+  methods: {
+    getContent(lang) {
+      console.log('LOADING NAV', lang);
+    }
+  },
+  created () {  
+    this.getContent(Vue.config.lang)
+  },
+  beforeRouteUpdate (to, from, next) {
+    this.getContent(Vue.config.lang)
+    next()
+  },
   components: {
-    FooterPrismic
+    AppFooter,
+    Navigation
   }
 }
 </script>
 
-<style>
-@import "./assets/css/resetr.css";
-@import "./assets/css/prismic-edit-button.css";
+<style lang="scss">
+@import "./assets/css/site";
 </style>

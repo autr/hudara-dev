@@ -1,0 +1,60 @@
+
+@import "_variables";
+// @import "_typography";
+
+
+body {
+	font-size: $font-size-base;
+	color: black;
+	background-color: #f4f4f4;
+	font-family: 'GT Pressura Mono', sans-serif;
+	padding: 0;
+	margin: 0;
+
+	a {
+		color: $orange;
+		font-weight: bold;
+	}
+}
+
+
+.leadingText {
+	font-size: 18px;
+	font-weight: 400;
+}
+
+
+.container {
+	width: 100%;
+	max-width: $site-width;
+	margin: 0 auto;
+	box-sizing: border-box;
+	padding: 2em;
+	&.light {
+		background-color: white;
+	}
+	&.topMargin {
+		margin-top: 2em;
+	}
+	&.bottomMargin {
+		margin-bottom: 2em;
+	}
+}
+
+.pageHeader {
+	background-color: $orange;
+	padding: 2em 0em;
+	color: white;
+	a {
+		color: white;
+	}
+}
+
+.pageFooter {
+	background-color: $grey;
+	padding: 2em 0em;
+	color: white;
+	a {
+		color: white;
+	}
+}
