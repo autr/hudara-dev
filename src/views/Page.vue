@@ -1,54 +1,137 @@
 <!-- Create file src/views/Page.vue -->
 
 <template lang="pug">
-.wrapper
-  h1.title
-    | {{ $prismic.richTextAsPlain(fields.title) }}
-  ul
-    li(v-for='lang in alternate_languages')
-      router-link(:to='`/${lang.shorthand}/${lang.uid}`') {{lang.shorthand}}
-  prismic-rich-text(:field="fields.description" class="description")
-  .cta-wrapper
-    prismic-link.cta(:field='fields.ctaLink')
-      | {{ $prismic.richTextAsPlain(fields.ctaText) }}
-  .icon-wrapper: prismic-image( :field="fields.icon" class="icon")
+.page
+
+  
+
+  section(v-for='section, i in document')
+
+
+    .banner.paddingBottom(
+      v-bind:style='{ backgroundColor: section.primary.background }'
+      v-if='section.slice_type === "banner"') 
+
+      .container
+
+
+        page-header( v-if='i === 0' :title='title' :languages='languages' :currentLang='currentLang')
+
+        .row 
+          .col-xs-12(
+
+            v-for='col, ii in section.items' 
+            v-bind:class="['col-sm-' + col.width, section.primary.iframe.url ? 'bg' : 'nobg']")
+              prismic-rich-text.text(
+                :field="col.column"
+              )
+              site-button(:field='col.button')
+        .background
+          img(
+            v-if='section.primary.image.url'
+            :src='section.primary.image.url'
+            :alt='section.primary.image.alt')
+      .iframe
+        .overlay(
+          v-on:click='openIframe(section.primary.iframe.url)')
+        iframe(
+          scrolling="no"
+          v-if='section.primary.iframe.url'
+          :src='section.primary.iframe.url')
+
+
+    .content.container.paddingBottom(v-if='section.slice_type === "row"') 
+
+
+      page-header( v-if='i === 0' :title='title' :languages='languages' :currentLang='currentLang')
+
+      .row
+        .col-xs-12(
+          v-for='col, ii in section.items' 
+          v-bind:class="['col-sm-' + col.width]")
+            prismic-rich-text.text(:field="col.column")
+            site-button(v-if='col.button.length > 0'  :field='col.button' buttonType='orange')
+
 </template>
 
 <script>
 import Vue from 'vue'
+import SiteButton from '../components/Button'
+import PageHeader from '../components/PageHeader'
+import GoCardless from 'gocardless-api'
+
+const gocardless = new GoCardless('sandbox_SjzZ9W_UOZWHQUESIEZIw9GbkoGd9Jk_0Y3VBoKO')
+const languagesDefault = {
+        'en' : {},
+        'de' : {},
+        'ar' : {},
+      };
+
 export default {
   name: 'Page',
   data () {
     return {
-      documentId: '',
-      alternate_languages: '',
-      fields: {
-        title: null
-      }
+      title: '',
+      currentLang: '',
+      document: {},
+      languages: languagesDefault
     }
   },
-  methods: {
-    getContent (uid) {
+  components: {
+    SiteButton,
+    PageHeader
+  },
+  methods: { 
+    openIframe(url) {
+      window.open(url);
+    },
+    setLang(lang) {
 
+      if (lang.lang === 'de-de') this.languages.de = lang;
+      else if (lang.lang === 'en-gb') this.languages.en = lang;
+      else if (lang.lang === 'ar') this.languages.ar = lang;
+    },
+
+    getContent (uid) {
       this.$prismic.client.getByUID('page', uid)
         .then((document) => {
-          // console.log(document.lang, document.alternate_languages);
           if (document) {
-            this.alternate_languages = document.alternate_languages;
-            this.alternate_languages.forEach( (lang) => {
-              const i = lang.lang.lastIndexOf('-');
-              lang.shorthand = (i !== -1) ? lang.lang.substring(0, i) : lang.lang;
+            // console.log('ALTS', document);
+
+            this.languages = languagesDefault;
+
+            this.setLang(document);
+
+            document.alternate_languages.forEach( (lang) => {
+
+              this.setLang(lang);
+              // const i = lang.lang.lastIndexOf('-');
+              // lang.shorthand = (i !== -1) ? lang.lang.substring(0, i) : lang.lang;
             });
-            this.documentId = document.id;
-            this.fields.title = document.data.title;
+            this.currentLang = document.lang;
+            this.document = document.data.body;
+            this.title = document.data.title[0].text;
+            // console.log('Page', document.data);
+            // console.log('Languages', this.languages);
+
           } else {
-            // this.$router.push({ name: 'not-found' })
+            console.log('No Page');
           }
         })
     }
   },
   created () {  
-    console.log('CREATED');
+    // gocardless.request({
+    //     method: 'GET',
+    //     resource: 'customers',
+    //     query: {
+    //         limit: 10
+    //     }
+    // }).then( customers => {
+    //   console.log('customers', customers);
+    // }).catch( err => {
+    //   console.log('gocardless err', err)
+    // }); 
     this.getContent(this.$route.params.uid)
   },
   beforeRouteUpdate (to, from, next) {
@@ -58,66 +141,53 @@ export default {
 }
 </script>
 
-<style>
-.wrapper {
-  max-width: 820px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 40px 10px;
-  font-family: Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
+<style lang="scss">
 
-.title {
-  font-size: 32px;
-}
-
-.description {
-  margin-top: 40px;
-}
-
-.description h2 {
-  font-size: 24px;
-}
-
-.description h2:not(:first-child) {
-  margin-top: 20px;
-}
-
-.description p {
-  line-height: 1.5;
-}
-
-.description p:not(:first-child) {
-  margin-top: 10px;
-}
-
-.description a {
-  color: #404e9f;
-}
-
-.description a:hover {
-  text-decoration: underline;
-}
-
-.cta-wrapper {
-  margin-top: 40px;
-}
-
-.cta {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  padding: 0 20px;
-  background-color: #404e9f;
-  color: white;
-}
-
-.icon-wrapper {
-  margin-top: 40px;
-}
-
-.icon {
-  max-width: 100%;
+@import "../assets/css/_variables";
+.banner {
+  .bg {
+    background: white;
+    // border: 4px solid $orange;
+    padding-top: 2em;
+    padding-bottom: 0px;
+    box-sizing: border-box;
+    z-index: 10;
+    position: relative;
+    // box-shadow: 0px 0px 20px $lightgrey;
+    p {
+      padding-bottom: 0px;
+    }
+    .button {
+      border-color: $orange;
+      a {
+        color: $orange;
+      }
+    }
+  }
+  .iframe {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+    .overlay {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      cursor: pointer;
+    }
+    iframe {
+      outline: 0;
+      border: none;
+      // pointer-events: none;
+      // z-index: 6;
+      width: 100%;
+      min-height: 600px;
+    }
+  }
 }
 </style>

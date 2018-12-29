@@ -7,9 +7,12 @@
   "author": "Prismic",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "ngrok": "ngrok http --host-header=rewrite 8080"
   },
   "dependencies": {
+    "@liqueflies/vue-grid": "0.0.4",
+    "gocardless-api": "^0.2.0",
     "prismic-dom": "^2.1.0",
     "prismic-vue": "^1.3.0",
     "vue": "^2.5.16",

@@ -1,17 +1,15 @@
 <template lang="pug">
 #app
-  navigation
-  .container.light.topMargin.bottomMargin
-    router-view
-
-  app-footer
+  site-header
+  router-view
+  site-footer
 </template>
 
 <script>
 	
 import Vue from 'vue'
-import AppFooter from './components/AppFooter.vue'
-import Navigation from './components/Navigation.vue'
+import SiteHeader from './components/SiteHeader.vue'
+import SiteFooter from './components/SiteFooter.vue'
 export default {
   name: 'App',
   data () {
@@ -26,7 +24,7 @@ export default {
   },
   methods: {
     getContent(lang) {
-      console.log('LOADING NAV', lang);
+      // console.log('LOADING NAV', lang);
     }
   },
   created () {  
@@ -37,8 +35,8 @@ export default {
     next()
   },
   components: {
-    AppFooter,
-    Navigation
+    SiteFooter,
+    SiteHeader
   }
 }
 </script>
