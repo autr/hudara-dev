@@ -22,7 +22,7 @@ export default {
   methods: {
   },
   created () {  
-    console.log('KADJHKJHSADFKJH');
+    // console.log('KADJHKJHSADFKJH');
   },
   beforeRouteUpdate (to, from, next) {
   }

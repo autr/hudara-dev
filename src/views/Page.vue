@@ -1,7 +1,7 @@
 <!-- Create file src/views/Page.vue -->
 
 <template lang="pug">
-.page
+.page( v-bind:class='[identifier]')
 
   
 
@@ -72,6 +72,7 @@ export default {
   data () {
     return {
       title: '',
+      identifier: '',
       currentLang: '',
       document: {},
       languages: languagesDefault
@@ -101,6 +102,7 @@ export default {
             this.languages = languagesDefault;
 
             this.setLang(document);
+            this.$eventHub.$emit('new-language', document.lang);
 
             document.alternate_languages.forEach( (lang) => {
 
@@ -111,7 +113,13 @@ export default {
             this.currentLang = document.lang;
             this.document = document.data.body;
             this.title = document.data.title[0].text;
-            // console.log('Page', document.data);
+
+            // if (this.title === '')
+            if (this.title) {
+              this.identifier = this.title.toLowerCase();
+              while (this.identifier.indexOf(' ') !== -1) this.identifier = this.identifier.replace(' ', '-');
+            }
+            console.log('Page', document.data, this.title, this.identifier);
             // console.log('Languages', this.languages);
 
           } else {
@@ -121,17 +129,6 @@ export default {
     }
   },
   created () {  
-    // gocardless.request({
-    //     method: 'GET',
-    //     resource: 'customers',
-    //     query: {
-    //         limit: 10
-    //     }
-    // }).then( customers => {
-    //   console.log('customers', customers);
-    // }).catch( err => {
-    //   console.log('gocardless err', err)
-    // }); 
     this.getContent(this.$route.params.uid)
   },
   beforeRouteUpdate (to, from, next) {
@@ -144,6 +141,19 @@ export default {
 <style lang="scss">
 
 @import "../assets/css/_variables";
+
+.page {
+  &.our-team {
+    .row {
+      img {
+        // border-radius: 100%;
+        width: 100%;
+        border-bottom: 10px solid $orange;
+      }
+    }
+  }
+}
+
 .banner {
   .bg {
     background: white;
@@ -170,7 +180,7 @@ export default {
     left: 0px;
     width: 100%;
     height: 100%;
-    min-height: 600px;
+    min-height: 100%;
     .overlay {
       position: absolute;
       top: 0px;
@@ -186,7 +196,7 @@ export default {
       // pointer-events: none;
       // z-index: 6;
       width: 100%;
-      min-height: 600px;
+    min-height: 100%;
     }
   }
 }

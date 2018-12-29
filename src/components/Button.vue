@@ -2,7 +2,8 @@
 
   .button( v-bind:class='buttonType')
     span {{type}}
-    router-link(:to='`/${path}`') {{ $prismic.richTextAsPlain(field) }}
+    router-link(v-if='!isWeb' :to='`/${path}`') {{ $prismic.richTextAsPlain(field) }}
+    a(v-if='isWeb' :href='`${path}`' target='_blank') {{ $prismic.richTextAsPlain(field) }}
 </template>
 
 <script>
@@ -11,7 +12,8 @@ export default {
   data() {
 	return {
 		path: '',
-		type: ''
+		type: '',
+    isWeb: false
 	}
   },
   props: ['field', 'buttonType'],
@@ -19,11 +21,15 @@ export default {
 
   },
 	created () {  
-    // console.log(this.buttonType, "TYPEEE");
-		// console.log('fiiield', this.field[0].text, this.field[0].spans[0].data.slug);
-
     try {
-		  this.path = this.field[0].spans[0].data.slug;
+      if (this.field[0].spans[0].data.link_type === 'Web') {
+        this.isWeb = true;
+        console.log('IS WEB', this.field[0].spans[0].data);
+        this.path = this.field[0].spans[0].data.url;
+      } else {
+
+      this.path = this.field[0].spans[0].data.slug;
+      }
     } catch(err) {
 
     }

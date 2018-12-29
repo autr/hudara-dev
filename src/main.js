@@ -7,7 +7,7 @@ import router from './router'
 import { VueGrid } from '@liqueflies/vue-grid'
 import GoCardless from 'gocardless-api'
 
-
+Vue.prototype.$eventHub = new Vue(); // Global event bus
 
 Vue.config.productionTip = false
 
@@ -23,7 +23,6 @@ Vue.use(PrismicVue, {
 })
 
 Vue.config.lang = 'en';
-console.log(Vue.config.lang);
 
 new Vue({
   router,

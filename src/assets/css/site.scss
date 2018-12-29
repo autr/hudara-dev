@@ -181,6 +181,13 @@ img {
 	p {
 		padding-bottom: 1em;
 	}
+	ul, ol {
+		li {
+			margin-bottom: 1em;
+			padding-left: 1em;
+			border-left: 2px solid #ddd;
+		}
+	}
 }
 
 .row {

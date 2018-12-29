@@ -116,6 +116,7 @@ export default {
       width: 100%;
       box-sizing: border-box;
       outline: none;
+      color: white;
       &::placeholder {
         color: $lightgrey;
         font-family: 'GT Pressura Mono', sans-serif;

@@ -5,7 +5,7 @@
     span.hamburger-box
       span.hamburger-inner
   .top.container
-    a.logo(href='/')
+    router-link.logo(:to='"/"')
       prismic-rich-text.text(:field="document.title")
       prismic-image( :field="document.logo")
     .buttons
@@ -30,7 +30,8 @@ export default {
       document: {},
       linkGroups: [],
       buttons: [],
-      isActive: false
+      isActive: false,
+      currentLanguage: 'en-gb'
     }
   },
   components: {
@@ -47,19 +48,30 @@ export default {
       while (slug.indexOf('-') !== -1) slug = slug.replace('-', ' ');
       return slug;
     },
-    getNavigation() {
-
+    newLanguage(lang) {
+      console.log('NEW LANGUAGE', lang);
+      if (this.currentLanguage !== lang) {
+        this.currentLanguage = lang;
+        this.getNavigation();
+      }
+    },
+    getNavigation(lang) {
+      console.log('get Navigation');
     this.$prismic.client.query(
       this.$prismic.Predicates.at('document.type', 'header'),
-      { lang:  '*' }
+      { lang:  this.currentLanguage }
 
     ).then((response) => {
       const document = response.results[0]
-      console.log('Header', document.data);
-      this.document = document.data;
-      this.linkGroups = this.document.body;
-      this.buttons = document.data.buttons;
-      console.log('Header', document);
+      // console.log('Header', document.data);
+      if (document) {
+        this.document = document.data;
+        this.linkGroups = this.document.body;
+        this.buttons = document.data.buttons;
+      } else {
+        console.log('Header', 'NO DOCUMENT');
+      }
+      // console.log('Header', document);
       // document contains the document content
     });
 
@@ -77,7 +89,8 @@ export default {
     }
   },
   created () {  
-    this.getNavigation()
+    this.getNavigation();
+    this.$eventHub.$on('new-language', this.newLanguage);
   },
   beforeRouteUpdate (to, from, next) {
     this.getNavigation()
@@ -144,10 +157,14 @@ export default {
       padding-right: 2em;
     }
     a {
-      padding-right: 2em;
+      margin-right: 2em;
+      padding: 0.4em 0em;
       color: white;
       text-transform: capitalize;
       font-weight: 600;
+      &.router-link-active {
+        border-bottom: 2px solid white;
+      }
     }
   }
   .hamburger {
@@ -228,7 +245,7 @@ export default {
         font-size: 1.4em;
       }
       a { 
-        padding-right: 0px; 
+        margin-right: 0px; 
       }
     }
 
