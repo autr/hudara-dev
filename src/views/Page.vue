@@ -58,9 +58,8 @@
 import Vue from 'vue'
 import SiteButton from '../components/Button'
 import PageHeader from '../components/PageHeader'
-import GoCardless from 'gocardless-api'
 
-const gocardless = new GoCardless('sandbox_SjzZ9W_UOZWHQUESIEZIw9GbkoGd9Jk_0Y3VBoKO')
+// const gocardless = new GoCardless('sandbox_SjzZ9W_UOZWHQUESIEZIw9GbkoGd9Jk_0Y3VBoKO')
 const languagesDefault = {
         'en' : {},
         'de' : {},

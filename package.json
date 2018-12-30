@@ -8,11 +8,11 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "ngrok": "ngrok http --host-header=rewrite 8080"
+    "ngrok": "ngrok http --host-header=rewrite 8080",
+    "deploy": "now ./dist"
   },
   "dependencies": {
-    "@liqueflies/vue-grid": "0.0.4",
-    "gocardless-api": "^0.2.0",
+    "flexboxgrid": "^6.3.1",
     "prismic-dom": "^2.1.0",
     "prismic-vue": "^1.3.0",
     "vue": "^2.5.16",
