@@ -112,13 +112,21 @@ export default {
             this.currentLang = document.lang;
             this.document = document.data.body;
             this.title = document.data.title[0].text;
+            this.identifier = document.uid;
 
-            // if (this.title === '')
-            if (this.title) {
-              this.identifier = this.title.toLowerCase();
-              while (this.identifier.indexOf(' ') !== -1) this.identifier = this.identifier.replace(' ', '-');
-            }
             console.log('Page', document.data, this.title, this.identifier);
+            setTimeout( () => {
+              const el = this.$el.querySelectorAll('.banner .row h4')[0];
+              const txt = el.innerText;
+              const arr = txt.split('');
+              el.innerText = '';
+              for (let i = 0; i < arr.length; i ++) {
+                el.innerHTML += `<span>${arr[i]}</span>`;
+              }
+              setTimeout( () => { el.classList.add('show') }, 10);
+              console.log(txt, 'TXT', arr);
+            }, 10);
+
             // console.log('Languages', this.languages);
 
           } else {
@@ -126,6 +134,8 @@ export default {
           }
         })
     }
+  },
+  mounted() {
   },
   created () {  
     this.getContent(this.$route.params.uid)
@@ -148,6 +158,31 @@ export default {
         // border-radius: 100%;
         width: 100%;
         border-bottom: 10px solid $orange;
+      }
+    }
+  }
+  &.en, &.de, &.ar {
+    .banner {
+      .text {
+        h1, h2, h3, h4, h5, h6 {
+          // background-color: $brown;
+          // color: white;
+          // display: inline;
+          span {
+            opacity: 0;
+            transition: 0.2s ease opacity;
+            @for $i from 1 through 400 {
+              &:nth-child(#{$i}) {
+                transition-delay: $i * 0.03s;
+              }
+            }
+          }
+          &.show {
+            span {
+              opacity: 1;
+            }
+          }
+        }
       }
     }
   }

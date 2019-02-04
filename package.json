@@ -9,7 +9,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "ngrok": "ngrok http --host-header=rewrite 8080",
-    "deploy": "now ./dist"
+    "now-build": "npm run build"
   },
   "dependencies": {
     "flexboxgrid": "^6.3.1",

@@ -24,7 +24,7 @@ export default {
     try {
       if (this.field[0].spans[0].data.link_type === 'Web') {
         this.isWeb = true;
-        console.log('IS WEB', this.field[0].spans[0].data);
+        // console.log('IS WEB', this.field[0].spans[0].data);
         this.path = this.field[0].spans[0].data.url;
       } else {
 
